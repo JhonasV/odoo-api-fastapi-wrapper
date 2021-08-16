@@ -14,6 +14,11 @@ FastAPI Rest API wrapper, consuming odoo xmlrpc API
 
 ## Installation
 
+### Install environment manager `virtualenv`
+```bash
+pip install virtualenv
+```
+
 ### Create environment
 ```bash
 virtualenv env
