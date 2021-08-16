@@ -4,6 +4,7 @@ FastAPI Rest API wrapper, consuming odoo xmlrpc API
 
 ## Features
 - Contacts
+- Events
 
 
 ## Technologies
