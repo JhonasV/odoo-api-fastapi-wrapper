@@ -36,8 +36,20 @@ Install the dependecies in the folder `odoo-api-fastapi-wrapper` root
 ```bash
 pip install -r requirements.txt
 ```
+## Environment variables configuration
 
+Create `.env` file
+```bash
+touch .env
+```
 
+Add variables
+```bash
+ODOO_URL=http://localhost:8069/xmlrpc/2
+ODOO_DB=<Odoo database name>
+ODOO_USERNAME=<Odoo database username>
+ODOO_PASSWORD=<Odoo database password>
+```
 
 ## Run the project
 Go to the project root folder
