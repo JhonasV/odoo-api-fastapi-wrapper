@@ -1,4 +1,5 @@
-from sys import base_prefix
+from datetime import datetime
+from models.events import EventOut, EventsIn
 from fastapi import APIRouter, HTTPException
 from odoo_connection import models, db, uid, password
 from typing import Optional
@@ -10,11 +11,11 @@ router = APIRouter(
 
 
 
-@router.get("/")
+@router.get("/all", response_model=EventOut)
 def get_events(offset: Optional[int] = 1, limit: int = 5):
     record = models.execute_kw(db, uid, password, 
     'event.event', 'search_read', 
-    [[['is_published', '=', 'true']]], 
+    [[['is_published', '=', 'true'], ['active','=','true']]], 
     {'fields': event_fields,
     'offset': offset, 'limit': limit})
 
@@ -22,6 +23,10 @@ def get_events(offset: Optional[int] = 1, limit: int = 5):
         return record
     return HTTPException(status_code=404, detail="No events found")
 
+@router.get('/types')
+def get_event_types():    
+    record = models.execute_kw(db, uid, password, 'event.type', 'search_read', [[]], {'fields': ['id', 'name']})
+    return record
 
 @router.get('/{event_id}')
 def get_event(event_id: int):
@@ -37,6 +42,31 @@ def get_event(event_id: int):
 
 @router.delete('/{event_id}')
 def delete_event(event_id: int):    
-    event_removed = models.execute_kw(db, uid, password, 'event.event', 'unlink', [event_id])
+    models.execute_kw(db, uid, password, 'event.event', 'write', [[event_id], {'active': False}])
+    deleted_event_name = models.execute_kw(db, uid, password, 'event.event', 'name_get', [[event_id]])
+    return deleted_event_name
 
-    return event_removed
+@router.put('/{event_id}')
+def put_publish_event(event_id: int):
+    id = models.execute_kw(db, uid, password, 'event.event', 'write', [[event_id], {'is_published': True}])
+    published_event_name = models.execute_kw(db, uid, password, 'event.event', 'name_get', [[event_id]])
+    return published_event_name
+    
+@router.post('/create')
+def post_event(event: EventsIn):
+    event_dict = {
+        'id': event.id,
+        'name': event.name,
+        'active': event.active,
+        'company_id': event.company_id,
+        'organizer_id': event.organizer_id,
+        'date_begin': str(event.date_begin),
+        'date_end': str(event.date_end),
+    }
+    
+    id = models.execute_kw(db, uid, password, 'event.event', 'create', [event_dict])
+    return {'id': id};
+
+
+
+
