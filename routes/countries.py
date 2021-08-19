@@ -7,7 +7,7 @@ router = APIRouter(
 )
 
 
-@router.get('/all', response_class=Countries)
+@router.get('/all', response_model=Countries)
 def get_countries():
     countries = models.execute_kw(db, uid, password, 'res.country', 'search_read', [[]], {'fields': ['id', 'name']})
     return countries

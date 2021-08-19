@@ -48,7 +48,7 @@ def delete_event(event_id: int):
 
 @router.put('/{event_id}')
 def put_publish_event(event_id: int):
-    id = models.execute_kw(db, uid, password, 'event.event', 'write', [[event_id], {'is_published': True}])
+    models.execute_kw(db, uid, password, 'event.event', 'write', [[event_id], {'is_published': True}])
     published_event_name = models.execute_kw(db, uid, password, 'event.event', 'name_get', [[event_id]])
     return published_event_name
     
