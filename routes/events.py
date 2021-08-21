@@ -1,8 +1,7 @@
-from datetime import datetime
 from models.events import EventOut, EventsIn
 from fastapi import APIRouter, HTTPException
 from odoo_connection import models, db, uid, password
-from typing import Optional
+from typing import List, Optional
 from helpers.api_fields import event_fields
 router = APIRouter(
     prefix='/api/v1/events',
@@ -11,17 +10,29 @@ router = APIRouter(
 
 
 
-@router.get("/all", response_model=EventOut)
-def get_events(offset: Optional[int] = 1, limit: int = 5):
+@router.get("/all/active", response_model=List[EventOut])
+def get_events():
     record = models.execute_kw(db, uid, password, 
     'event.event', 'search_read', 
-    [[['is_published', '=', 'true'], ['active','=','true']]], 
-    {'fields': event_fields,
-    'offset': offset, 'limit': limit})
+    [[['active', '=', 'true']]], 
+    {'fields': event_fields})
 
     if len(record) > 0:
         return record
     return HTTPException(status_code=404, detail="No events found")
+
+@router.get("/all", response_model=List[EventOut])
+def get_events():
+    record = models.execute_kw(db, uid, password, 
+    'event.event', 'search_read', 
+    [[['is_published', '=', 'true'], ['active','=', 'true']]], 
+    {'fields': event_fields})
+
+    if len(record) > 0:
+        return record
+    return HTTPException(status_code=404, detail="No events found")
+
+
 
 @router.get('/types')
 def get_event_types():    
@@ -54,6 +65,7 @@ def put_publish_event(event_id: int):
     
 @router.post('/create')
 def post_event(event: EventsIn):
+
     event_dict = {
         'id': event.id,
         'name': event.name,
@@ -62,6 +74,9 @@ def post_event(event: EventsIn):
         'organizer_id': event.organizer_id,
         'date_begin': str(event.date_begin),
         'date_end': str(event.date_end),
+        'description': event.description,
+        'seats_max': event.seats_max,
+        'seats_limited': event.seats_limited
     }
     
     id = models.execute_kw(db, uid, password, 'event.event', 'create', [event_dict])
