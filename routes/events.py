@@ -1,7 +1,7 @@
 from models.events import EventOut, EventsIn
 from fastapi import APIRouter, HTTPException
 from odoo_connection import models, db, uid, password
-from typing import List, Optional
+from typing import List
 from helpers.api_fields import event_fields
 router = APIRouter(
     prefix='/api/v1/events',
