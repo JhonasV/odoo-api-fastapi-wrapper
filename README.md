@@ -3,8 +3,6 @@ FastAPI Rest API wrapper, consuming odoo xmlrpc API
 
 
 ## Features
-- Countries
-- Companies
 - Events
 
 
