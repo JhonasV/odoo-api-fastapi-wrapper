@@ -13,6 +13,7 @@ const Page = () => {
   const [visible, setVisible] = useState(false)
   const [gridApi, setGridApiPage] = useState<GridApi>()
   const [publishingEvent, setPublishingEvent] = useState<boolean>(false)
+  const [deletingEvent, setDeletingEvent] = useState<boolean>(false)
   const [events, setEvents] = useState<IEventsOut[]>()
   const [saving, setSaving] = useState(false)
 
@@ -59,6 +60,27 @@ const Page = () => {
       .finally(() => setSaving(false))
   }
 
+  const deleteEvent = () => {
+    let row: IEventsOut = gridApi?.getSelectedRows()[0]
+    if (!row) {
+      message.warning('Debe de seleccionar un evento en la tabla primero!')
+      return
+    }
+
+    setDeletingEvent(true)
+    Events.delete(row.id)
+      .then((res) => {
+        message.success('Se eliminó el evento exitosamente!')
+        fetchEvents()
+      })
+      .catch((err) => {
+        message.error(
+          'No pudimos eliminar el evento en estos momentos, intenta de nuevo más tarde!'
+        )
+      })
+      .finally(() => setDeletingEvent(false))
+  }
+
   const savePublishedEvent = (event_id: number) => {
     setPublishingEvent(true)
     Events.updateEventToPublished(event_id)
@@ -85,6 +107,8 @@ const Page = () => {
           publishingEvent={publishingEvent}
           onPublish={publishEvent}
           setVisible={setVisible}
+          deletingEvent={deletingEvent}
+          onDelete={deleteEvent}
         />
       </Margin>
       <Margin top="1em">

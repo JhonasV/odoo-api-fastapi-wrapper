@@ -38,6 +38,7 @@ const Table = ({ setGridApiPage, events }: IProps) => {
           sortable={true}
           filter={true}
           field="id"
+          width={100}
         ></AgGridColumn>
         <AgGridColumn
           width={300}

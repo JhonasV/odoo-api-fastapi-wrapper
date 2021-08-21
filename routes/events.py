@@ -8,8 +8,6 @@ router = APIRouter(
     tags=['events']
 )
 
-
-
 @router.get("/all/active", response_model=List[EventOut])
 def get_events():
     record = models.execute_kw(db, uid, password, 

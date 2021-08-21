@@ -11,10 +11,9 @@ import {
   Checkbox,
   FormInstance,
 } from 'antd'
-import { AxiosError } from 'axios'
+
 import moment from 'moment'
 import { useState } from 'react'
-import { Events } from '../../../app/api/agent'
 import { IEventsIn } from '../../../app/models'
 
 const { Option } = Select
@@ -120,7 +119,7 @@ const EventCreateDrawer = ({
                 ]}
               >
                 <Select placeholder="Porfavor selecciona una compañía">
-                  <Option value="1">TourCompany</Option>
+                  <Option value="1">YourCompany</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -138,6 +137,7 @@ const EventCreateDrawer = ({
                 ]}
               >
                 <DatePicker.RangePicker
+                  showTime={{ format: 'HH:mm' }}
                   style={{ width: '100%' }}
                   // getPopupContainer={(trigger) => trigger.parentElement}
                 />
